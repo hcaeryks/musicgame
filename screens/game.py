@@ -73,7 +73,7 @@ class Game():
             n = 0
             for i in range(len(self.notes[x])):
                 self.notes[x][i-n].y += 200 * self.screen.delta_time()
-                if self.notes[x][i-n].y >= 0 and self.notes[x][i-n].y < 1080-150-130-30:
+                if self.notes[x][i-n].y + self.notes[x][i-n].height >= 0 and self.notes[x][i-n].y < 1080-150-130-30:
                     self.notes[x][i-n].draw()
                 elif self.notes[x][i-n].y >= 1080-150-130-30:
                     self.notes[x].pop(i-n)
