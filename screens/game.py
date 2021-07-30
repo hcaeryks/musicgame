@@ -30,9 +30,6 @@ class Game():
         self.expls = [self.expl1, self.expl2, self.expl3, self.expl4]
         self.keypresses = ["D", "F", "J", "K"]
         self.keypressesCurr = [False, False, False, False]
-        self.notes = [[Sprite("assets/notepurple.png"), Sprite("assets/notepurple.png"), Sprite("assets/notepurple.png")],[Sprite("assets/notepurple.png"), Sprite("assets/notepurple.png"), Sprite("assets/notepurple.png")],[Sprite("assets/notepurple.png"), Sprite("assets/notepurple.png"), Sprite("assets/notepurple.png")],[Sprite("assets/notepurple.png"), Sprite("assets/notepurple.png"), Sprite("assets/notepurple.png")]]
-        for x in self.notes: 
-            for i in x: i.set_position(1920/6+130*randint(0,3),1080-150-130-150*randint(5,50))
 
         self.text = "NADA"
         self.key1.set_position(1920/6+130*0, 1080-150-130)
@@ -48,6 +45,9 @@ class Game():
         self.lane3l.set_position(1920/6+130*2, 1080-150-130-471)
         self.lane4l.set_position(1920/6+130*3, 1080-150-130-471)
         self.judgeline.set_position(1920/6-1, 1080-150-130-70)
+
+        self.notes = self.loadNotes()
+    
         pass
 
     def draw(self):
@@ -63,7 +63,7 @@ class Game():
                 if self.keypressesCurr[x] == False and self.notes[x] != []:
                     self.keypressesCurr[x] = True
                     print(x)
-                    if self.notes[x][0].y > 1080-150-130-70-300:
+                    if self.notes[x][0].y > 1080-150-130-70-75:
                         self.notes[x].pop(0)
                         self.text = "hit "+ self.keypresses[x]
             elif self.keypressesCurr[x] == True:
@@ -73,7 +73,7 @@ class Game():
             n = 0
             for i in range(len(self.notes[x])):
                 self.notes[x][i-n].y += 200 * self.screen.delta_time()
-                if self.notes[x][i-n].y >= 0 and self.notes[x][i-n].y < 1080-150-130-70-300:
+                if self.notes[x][i-n].y >= 0 and self.notes[x][i-n].y < 1080-150-130-30:
                     self.notes[x][i-n].draw()
                 elif self.notes[x][i-n].y >= 1080-150-130-30:
                     self.notes[x].pop(i-n)
@@ -88,3 +88,18 @@ class Game():
 
     def stop(self):
         pass
+
+    def loadNotes(self, path="songs/0/nm.sc"):
+        notes = [[], [], [], []]
+        i = False
+        with open(path, 'r') as f:
+            for line in f:
+                if i and line.startswith("#"):
+                    data = line[1:]
+                    data = data.split(":")
+                    note = Sprite("assets/notepurple.png")
+                    note.set_position(1920/6+130*int(data[1]), 1080-150-130-43-((int(data[0])/60) * 1000))
+                    notes[int(data[1])].append(note)
+                if "#SONGDATA#" in line:
+                    i = True
+        return notes

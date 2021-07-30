@@ -1,0 +1,14 @@
+#TITLE Teste
+#ARTIST Teste
+#GENRE Teste
+#BPM 130
+#LENGTH 90
+
+###SONGDATA###
+#30:0:0:0
+#50:1:0:0
+#90:2:0:0
+#130:3:0:0
+#170:2:0:0
+#210:1:0:0
+#250:0:0:0
