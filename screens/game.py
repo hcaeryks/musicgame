@@ -32,20 +32,22 @@ class Game():
         self.keypressesCurr = [False, False, False, False]
 
         self.text2 = "NADA"
-        self.key1.set_position(1920/6+100*0-20, 1080-125-130)
-        self.key2.set_position(1920/6+100*1-20, 1080-125-130)
-        self.key3.set_position(1920/6+100*2-20, 1080-125-130)
-        self.key4.set_position(1920/6+100*3-20, 1080-125-130)
-        self.key1l.set_position(1920/6+100*0-20, 1080-125-130)
-        self.key2l.set_position(1920/6+100*1-20, 1080-125-130)
-        self.key3l.set_position(1920/6+100*2-20, 1080-125-130)
-        self.key4l.set_position(1920/6+100*3-20, 1080-125-130)
-        self.lane1l.set_position(1920/6+100*0, 1080-125-130-471)
-        self.lane2l.set_position(1920/6+100*1, 1080-125-130-471)
-        self.lane3l.set_position(1920/6+100*2, 1080-125-130-471)
-        self.lane4l.set_position(1920/6+100*3, 1080-125-130-471)
-        self.judgeline.set_position(1920/6-1, 1080-125-130-70)
+        self.key1.set_position(1920/6+100*0-10, 1080-125-130)
+        self.key2.set_position(1920/6+100*1-10, 1080-125-130)
+        self.key3.set_position(1920/6+100*2-10, 1080-125-130)
+        self.key4.set_position(1920/6+100*3-10, 1080-125-130)
+        self.key1l.set_position(1920/6+100*0-10, 1080-125-130)
+        self.key2l.set_position(1920/6+100*1-10, 1080-125-130)
+        self.key3l.set_position(1920/6+100*2-10, 1080-125-130)
+        self.key4l.set_position(1920/6+100*3-10, 1080-125-130)
+        self.lane1l.set_position(1920/6+100*0, 1080-125-130-10-5-331)
+        self.lane2l.set_position(1920/6+100*1, 1080-125-130-10-5-331)
+        self.lane3l.set_position(1920/6+100*2, 1080-125-130-10-5-331)
+        self.lane4l.set_position(1920/6+100*3, 1080-125-130-10-5-331)
+        self.judgeline.set_position(1920/6+100*0, 1080-125-130-30)
 
+        self.oldpos = 0
+        self.deltamus = 0
         self.notes = self.loadNotes()
         self.music = music
         self.music.load("songs/0/audio.ogg")
@@ -53,6 +55,9 @@ class Game():
         pass
 
     def draw(self):
+        self.deltamus = (self.music.get_pos() - self.oldpos) / 1000
+        self.oldpos = self.music.get_pos()
+
         self.key1.draw()
         self.key2.draw()
         self.key3.draw()
@@ -60,6 +65,18 @@ class Game():
 
         self.text2 = str(self.music.get_pos())
         
+
+        for x in range(len(self.notes)):
+            n = 0
+            for i in range(len(self.notes[x])):
+                self.notes[x][i-n].y += 1800 * self.deltamus
+                if self.notes[x][i-n].y + self.notes[x][i-n].height >= 0 and self.notes[x][i-n].y < 1080-150-125:
+                    self.notes[x][i-n].draw()
+                elif self.notes[x][i-n].y >= 1080-150-130:
+                    self.notes[x].pop(i-n)
+                    n += 1
+        
+        self.judgeline.draw()
         for x in range(len(self.keys)):
             if self.keyboard.key_pressed(self.keypresses[x]):
                 self.lanel[x].draw()
@@ -71,17 +88,7 @@ class Game():
             elif self.keypressesCurr[x] == True:
                 self.keypressesCurr[x] = False
 
-        for x in range(len(self.notes)):
-            n = 0
-            for i in range(len(self.notes[x])):
-                self.notes[x][i-n].y += 1800 * self.screen.delta_time()
-                if self.notes[x][i-n].y + self.notes[x][i-n].height >= 0 and self.notes[x][i-n].y < 1080-150-130-30:
-                    self.notes[x][i-n].draw()
-                elif self.notes[x][i-n].y >= 1080-150-130-30:
-                    self.notes[x].pop(i-n)
-                    n += 1
 
-        self.judgeline.draw()
         self.screen.draw_text(self.text2, 1000, 700, 50, (255,255,255))
         pass
 
@@ -108,8 +115,7 @@ class Game():
                         note = Sprite("assets/noteblue.png")
                     elif data[1] == "3":
                         note = Sprite("assets/notegreen.png")
-                    #1080-150-130-43
-                    note.set_position(1920/6+100*int(data[1]), 756-1600-(int(data[0]) * 1.8))
+                    note.set_position(1920/6+100*int(data[1]), 815-(int(data[0]) * 1.8))
                     notes[int(data[1])].append(note)
                 if "#SONGDATA#" in line:
                     i = True
