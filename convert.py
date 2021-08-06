@@ -1,4 +1,4 @@
-with open("Yoshikawa-45 - Gengaozo (_Y u r i_) [Hard].osu") as file:
+with open("C-Show - Invitation from Mr.C (_FrEsH_ChICkEn_) [ADVANCED].osu") as file:
     data = file.readlines()
     newArr = []
     for line in data[64:]:

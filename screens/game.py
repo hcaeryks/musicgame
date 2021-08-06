@@ -12,6 +12,8 @@ class Game():
         self.screen = screen
         self.keyboard = Keyboard()
 
+        self.left = Sprite("assets/left.png")
+        self.right = Sprite("assets/right.png")
         self.key1 = Sprite("assets/keylarge.png")
         self.key2 = Sprite("assets/keysmall.png")
         self.key3 = Sprite("assets/keysmall.png")
@@ -32,6 +34,8 @@ class Game():
         self.keypressesCurr = [False, False, False, False]
 
         self.text2 = "NADA"
+        self.left.set_position(1920/6+100*0-30, 0)
+        self.right.set_position(1920/6+100*4, 0)
         self.key1.set_position(1920/6+100*0-10, 1080-125-130)
         self.key2.set_position(1920/6+100*1-10, 1080-125-130)
         self.key3.set_position(1920/6+100*2-10, 1080-125-130)
@@ -50,7 +54,7 @@ class Game():
         self.deltamus = 0
         self.notes = self.loadNotes()
         self.music = music
-        self.music.load("songs/0/audio.ogg")
+        self.music.load("songs/1/audio.mp3")
         self.music.play()
         pass
 
@@ -58,6 +62,8 @@ class Game():
         self.deltamus = (self.music.get_pos() - self.oldpos) / 1000
         self.oldpos = self.music.get_pos()
 
+        self.left.draw()
+        self.right.draw()
         self.key1.draw()
         self.key2.draw()
         self.key3.draw()
@@ -69,7 +75,7 @@ class Game():
         for x in range(len(self.notes)):
             n = 0
             for i in range(len(self.notes[x])):
-                self.notes[x][i-n].y += 1800 * self.deltamus
+                self.notes[x][i-n].y += 1200 * self.deltamus
                 if self.notes[x][i-n].y + self.notes[x][i-n].height >= 0 and self.notes[x][i-n].y < 1080-150-125:
                     self.notes[x][i-n].draw()
                 elif self.notes[x][i-n].y >= 1080-150-130:
@@ -98,7 +104,7 @@ class Game():
     def stop(self):
         pass
 
-    def loadNotes(self, path="songs/0/nm.sc"):
+    def loadNotes(self, path="songs/1/nm.sc"):
         notes = [[], [], [], []]
         i = False
         with open(path, 'r') as f:
@@ -115,7 +121,7 @@ class Game():
                         note = Sprite("assets/noteblue.png")
                     elif data[1] == "3":
                         note = Sprite("assets/notegreen.png")
-                    note.set_position(1920/6+100*int(data[1]), 815-(int(data[0]) * 1.8))
+                    note.set_position(1920/6+100*int(data[1]), 815-(int(data[0]) * 1.2))
                     notes[int(data[1])].append(note)
                 if "#SONGDATA#" in line:
                     i = True
