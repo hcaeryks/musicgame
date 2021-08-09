@@ -2,7 +2,7 @@ from PPlay.window import Window
 from screens.game import Game
 from screens.menu import Menu
 
-GAME_STATE = 0
+GAME_STATE = 3
 CURR_PLY = 0
 window = Window(1920, 1080)
 scrGame = None
@@ -13,10 +13,6 @@ scrMenu = Menu(window)
 # 2 - Seleção
 # 3 - Jogo
 # 4 - Resultados
-switcher = {
-    0: scrMenu.run,
-    3: scrGame.draw
-}
 
 while 1:
     if CURR_PLY == 0 and GAME_STATE == 3:
@@ -25,5 +21,8 @@ while 1:
     elif CURR_PLY == 3 and GAME_STATE != 3:
         CURR_PLY = 0
     window.set_background_color((0, 0, 0))
-    switcher.get(GAME_STATE)()
+    if GAME_STATE == 0:
+        scrMenu.run()
+    elif GAME_STATE == 3:
+        scrGame.draw()
     window.update()
