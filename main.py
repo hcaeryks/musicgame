@@ -3,8 +3,9 @@ from screens.game import Game
 from screens.menu import Menu
 
 GAME_STATE = 0
+CURR_PLY = 0
 window = Window(1920, 1080)
-scrGame = Game(window)
+scrGame = None
 scrMenu = Menu(window)
 
 # 0 - Menu
@@ -18,6 +19,11 @@ switcher = {
 }
 
 while 1:
+    if CURR_PLY == 0 and GAME_STATE == 3:
+        CURR_PLY = 3
+        scrGame = Game(window)
+    elif CURR_PLY == 3 and GAME_STATE != 3:
+        CURR_PLY = 0
     window.set_background_color((0, 0, 0))
     switcher.get(GAME_STATE)()
     window.update()
