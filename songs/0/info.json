@@ -1,0 +1,9 @@
+{
+    "name": "teste",
+    "artist": "teste",
+    "genre": "teste",
+    "duration": "90",
+    "BPM": "130",
+    "dificulty": "easy",
+    "image": "./destino"
+}
