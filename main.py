@@ -1,4 +1,3 @@
-import pygame
 from PPlay.window import Window
 from screens.game import Game
 

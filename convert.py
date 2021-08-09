@@ -1,4 +1,4 @@
-with open("C-Show - Invitation from Mr.C (_FrEsH_ChICkEn_) [ADVANCED].osu") as file:
+with open("ParagonX9 - Chaoz Japan (Mage) [Myle's Hard].osu") as file:
     data = file.readlines()
     newArr = []
     for line in data[64:]:
@@ -6,10 +6,12 @@ with open("C-Show - Invitation from Mr.C (_FrEsH_ChICkEn_) [ADVANCED].osu") as f
         newLine = ""
         time = "#"+info[2]+":"
         lane = info[0]
-        if lane == "64": lane = "0:"
-        elif  lane == "192": lane = "1:"
-        elif  lane == "320": lane = "2:"
-        elif  lane == "448": lane = "3:"
+        if lane == "42": lane = "0:"
+        elif  lane == "128": lane = "1:"
+        elif  lane == "213": lane = "2:"
+        elif  lane == "298": lane = "3:"
+        elif  lane == "384": lane = "4:"
+        elif  lane == "469": lane = "5:"
         newLine += time+lane+"0:0\n"
         newArr.append(newLine)
     with open("new.mgame", "w") as newFile:
