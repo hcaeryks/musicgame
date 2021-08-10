@@ -84,8 +84,7 @@ class Animation(gameimage.GameImage):
                 self.curr_frame = self.initial_frame
             else:
                 if((not self.loop) and (self.curr_frame + 1 >= self.final_frame)):
-                    self.curr_frame = self.final_frame - 1
-                    self.playing = False
+                    self.stop()
             
     """Draws the current frame on the screen."""
     def draw(self):
