@@ -28,9 +28,11 @@ class Game():
         self.judgeline = Animation("assets/judgeline.png", 9, True)
         self.error = Sprite("assets/error.png")
         self.hpbar = Animation("assets/hpbar.png", 100, True)
-        self.lanelights = [Sprite("assets/lanelight.png") for x in range(6)]
+        self.boostbar = Animation("assets/boostbar.png", 100, True)
+        self.boosteffect = Animation("assets/boosteffect.png", 35, False)
+        self.lanelights = [Animation("assets/lanelighta.png", 20, False) for x in range(6)]
         self.keylights = [Sprite("assets/keypress.png") for x in range(6)]
-        self.explosions = [Animation("assets/explosion6.png", 51, False) for x in range(6)]
+        self.explosions = [Animation("assets/explosion9.png", 9, False) for x in range(6)]
         self.keypresses = ["S", "D", "F", "J", "K", "L"]
         self.keypressesCurr = [False, False, False, False, False, False]
 
@@ -41,16 +43,24 @@ class Game():
         self.lifetxt.set_position(21, 5)
         self.infomenu.set_position(620, self.screen.height/2)
         self.error.set_position(877-850, 142)
+        self.boostbar.set_position(643, 395)
+        self.boostbar.set_total_duration(200)
+        self.boostbar.stop()
         self.hpbar.set_position(21, 0)
         self.hpbar.set_total_duration(200)
         self.hpbar.stop()
+        self.boosteffect.set_position(134, 1080-304-600)
+        self.boosteffect.set_total_duration(350)
+        self.boosteffect.stop()
         self.judgeline.set_position(20, 1080-303-40)
         self.judgeline.set_total_duration(self.bpm*2)
         self.judgeline.stop()
         self.judgeline.play()
         [e.stop() for e in self.explosions]
-        [e.set_total_duration(500) for e in self.explosions]
-        [self.explosions[e].set_position(134+40-250+80*e, 1080-304+20-125) for e in range(len(self.explosions))]
+        [e.set_total_duration(200) for e in self.explosions]
+        [self.explosions[e].set_position(134+40-150+80*e, 1080-304+20-150) for e in range(len(self.explosions))]
+        [e.stop() for e in self.lanelights]
+        [e.set_total_duration(50) for e in self.lanelights]
         [self.lanelights[e].set_position(135+78*e+2*e, 1080-304-self.lanelights[e].height) for e in range(len(self.lanelights))]
         [self.keylights[e].set_position(134+80*e, 1080-304+20) for e in range(len(self.keylights))]
 
@@ -58,6 +68,8 @@ class Game():
         self.hp = 100
         self.hpdiff = 0
         self.errortime = 200
+        self.boost = 0
+        self.boostdiff = 0
 
         self.hitsound = Sound("assets/hitsound.wav")
         self.hitsound.set_volume(0.3)
@@ -77,12 +89,13 @@ class Game():
             self.error.draw()
         elif self.errortime <= 0:
             self.errortime = 1
+        self.boostbar.set_curr_frame(self.boost-1)
+        self.boostbar.draw()
         self.gameplay.draw()
         self.hpbar.set_curr_frame(self.hp-1)
         self.hpbar.draw()
         self.lifetxt.draw()
         #self.infomenu.draw()
-        
 
         for x in range(len(self.notes)):
             n = 0
@@ -101,7 +114,8 @@ class Game():
 
         for x in range(6):
             if self.keyboard.key_pressed(self.keypresses[x]):
-                self.lanelights[x].draw()
+                self.lanelights[x].stop()
+                self.lanelights[x].play()
                 self.keylights[x].draw()
                 if self.keypressesCurr[x] == False and self.notes[x] != []:
                     self.keypressesCurr[x] = True
@@ -112,6 +126,7 @@ class Game():
                         self.explosions[x].play()
                         self.notes[x].pop(0)
                         self.hpdiff += 5
+                        if self.boostdiff < 100: self.boostdiff += 1
                         self.combo += 1
                     else:
                         self.errortime = 1 -self.screen.delta_time()
@@ -120,16 +135,23 @@ class Game():
             elif self.keypressesCurr[x] == True:
                 self.keypressesCurr[x] = False
 
+        if self.keyboard.key_pressed("SPACE") and self.boost == 100:
+            self.boostdiff = -300
+            self.boosteffect.play()
+
+        if self.boosteffect.is_playing():
+            self.boosteffect.update()
+            self.boosteffect.draw()
+
         if self.judgeline.is_playing():
             self.judgeline.draw()
             self.judgeline.update()
 
-        if self.hpdiff != 0:
-            if self.hp > 1 or self.hp < 100: self.hp += self.hpdiff * self.screen.delta_time()
-            self.hpdiff -= self.hpdiff * self.screen.delta_time() * 2
-        if self.hp < 0: self.hp = 0
-        elif self.hp > 100: self.hp = 100
+        [e.draw() for e in self.lanelights]
+        [e.update() for e in self.lanelights]
 
+        self.boostdiff, self.boost = self.diffCalc(self.boostdiff, self.boost)
+        self.hpdiff, self.hp = self.diffCalc(self.hpdiff, self.hp)
         [e.update() for e in self.explosions]
         [e.draw() for e in self.explosions]
 
@@ -144,6 +166,15 @@ class Game():
 
     def stop(self):
         pass
+
+    def diffCalc(self, diff, real):
+        if diff != 0:
+            if real > 1 or real < 100: real += diff * self.screen.delta_time()
+            diff -= diff * self.screen.delta_time() * 2
+        if real < 0: real = 0
+        elif real > 100: real = 100
+
+        return diff, real
 
     def loadNotes(self, path="songs/0/hd.sc"):
         notes = [[], [], [], [], [], [], []]
