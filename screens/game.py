@@ -14,7 +14,13 @@ pygame.init()
 class Game():
     def __init__(self, screen):
         self.screen = screen
+        self.diff = "HARD"
         self.keyboard = Keyboard()
+
+        if self.diff == "HARD": self.dcolor = (214, 50, 39)
+        if self.diff == "NORMAL": self.dcolor = (39, 162, 214)
+        if self.diff == "EASY": self.dcolor = (39, 214, 65)
+        
 
         self.gameplay = Sprite("assets/gameplay.png")
         self.lifetxt = Sprite("assets/life.png")
@@ -127,6 +133,7 @@ class Game():
         [e.update() for e in self.explosions]
         [e.draw() for e in self.explosions]
 
+        self.screen.draw_text(self.diff, 862+828/2-((len(self.diff)*45)/2), self.screen.height - 70 - 30, 70, self.dcolor, "Arial")
         self.screen.draw_text(self.title, 862+828/2-((len(self.title)*40)/2), 20, 70, (200, 200, 200), "Arial")
         self.screen.draw_text(self.artist, 862+828/2-((len(self.artist)*18)/2), 20+70, 30, (200, 200, 200), "Arial")
         self.screen.draw_text(str(self.combo), 374-(len(str(self.combo))*50+(len(str(self.combo))-1)*3)//2, 200, 100, (200,200,200), "Impact")
