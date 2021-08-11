@@ -20,7 +20,7 @@ while 1:
         CURR_PLY = 3
         scrGame = Game(window)
     elif CURR_PLY == 3 and GAME_STATE != 3:
-        CURR_P = 0
+        CURR_PLY = 0
     window.set_background_color((0, 0, 0))
     if GAME_STATE == 0:
         scrMenu.run()

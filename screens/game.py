@@ -13,6 +13,7 @@ pygame.init()
 
 class Game():
     def __init__(self, screen):
+        self.velocity = 1.5
         self.screen = screen
         self.diff = "HARD"
         self.keyboard = Keyboard()
@@ -60,7 +61,7 @@ class Game():
         [e.set_total_duration(200) for e in self.explosions]
         [self.explosions[e].set_position(134+40-150+80*e, 1080-304+20-150) for e in range(len(self.explosions))]
         [e.stop() for e in self.lanelights]
-        [e.set_total_duration(50) for e in self.lanelights]
+        [e.set_total_duration(25) for e in self.lanelights]
         [self.lanelights[e].set_position(135+78*e+2*e, 1080-304-self.lanelights[e].height) for e in range(len(self.lanelights))]
         [self.keylights[e].set_position(134+80*e, 1080-304+20) for e in range(len(self.keylights))]
 
@@ -74,7 +75,7 @@ class Game():
         self.hitsound = Sound("assets/hitsound.wav")
         self.hitsound.set_volume(0.3)
         self.music = music
-        self.music.load("songs/0/audio.mp3")
+        self.music.load("songs/2/audio.mp3")
         self.music.set_volume(0.8)
         self.music.play()
         pass
@@ -100,7 +101,7 @@ class Game():
         for x in range(len(self.notes)):
             n = 0
             for i in range(len(self.notes[x])):
-                self.notes[x][i-n].y += 1800 * self.deltamus
+                self.notes[x][i-n].y += (self.velocity * 1000) * self.deltamus
                 if self.notes[x][i-n].y + self.notes[x][i-n].height >= 0 and self.notes[x][i-n].y < 1080-304-20:
                     self.notes[x][i-n].draw()
                 elif self.notes[x][i-n].y >= 1080-304-20+200:
@@ -176,10 +177,10 @@ class Game():
 
         return diff, real
 
-    def loadNotes(self, path="songs/0/hd.sc"):
+    def loadNotes(self, path="songs/2/hd.sc"):
         notes = [[], [], [], [], [], [], []]
         i = False
-        self.bg = GameImage("songs/0/bg.png")
+        self.bg = GameImage("songs/2/bg.png")
         self.bg.set_position(877, 142)
         with open(path, 'r') as f:
             for line in f:
@@ -199,7 +200,7 @@ class Game():
                         note = Sprite("assets/noteblue.png")
                     elif data[1] == "5":
                         note = Sprite("assets/notegreen.png")
-                    note.set_position(134+80*int(data[1]), 1080-304-20-(int(data[0]) * 1.8))
+                    note.set_position(134+80*int(data[1]), 1080-304-20-(int(data[0]) * self.velocity))
                     notes[int(data[1])].append(note)
                 if "#SONGDATA#" in line:
                     i = True
@@ -217,7 +218,7 @@ class Game():
         timebmeas = int(self.length/measures)
         for i in range(measures):
             note = Sprite("assets/bar.png")
-            note.set_position(134, 1080-304-((timebmeas * 1000) * i) * 1.8 - 2)
+            note.set_position(134, 1080-304-((timebmeas * 1000) * i) * self.velocity - 2)
             notes[6].append(note)
 
         return notes

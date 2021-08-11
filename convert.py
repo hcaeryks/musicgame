@@ -1,4 +1,4 @@
-with open("ParagonX9 - Chaoz Japan (Mage) [Myle's Hard].osu") as file:
+with open("penoreri - Lord=Crossight (Aras25) [6K ADVANCED].osu") as file:
     data = file.readlines()
     newArr = []
     for line in data[64:]:
@@ -12,7 +12,13 @@ with open("ParagonX9 - Chaoz Japan (Mage) [Myle's Hard].osu") as file:
         elif  lane == "298": lane = "3:"
         elif  lane == "384": lane = "4:"
         elif  lane == "469": lane = "5:"
-        newLine += time+lane+"0:0\n"
+        info = info[-1].split(":")[0]
+        type = 0
+        end = 0
+        if info != 0:
+            type = str(1) + ":"
+            end = str(info)
+        newLine += time+lane+type+end+"\n"
         newArr.append(newLine)
     with open("new.mgame", "w") as newFile:
         newFile.writelines(newArr)
