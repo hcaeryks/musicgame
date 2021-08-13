@@ -4,6 +4,7 @@
     "genre": "HOLIC",
     "duration": "109",
     "BPM": "230",
-    "dificulty": "easy",
-    "image": "songs/bg.png"
+    "difficulty": "easy",
+    "image": "songs/1/bg.png",
+    "id": 1
 }

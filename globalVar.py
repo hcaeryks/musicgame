@@ -1,0 +1,2 @@
+GAME_STATE = 0
+CURR_PLY = 0

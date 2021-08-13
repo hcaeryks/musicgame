@@ -4,6 +4,7 @@
     "genre": "Rhythm Game",
     "duration": "126",
     "BPM": "154",
-    "dificulty": "hard",
-    "image": "./destino"
+    "difficulty": "hard",
+    "image": "songs/2/bg.png",
+    "id": "2"
 }

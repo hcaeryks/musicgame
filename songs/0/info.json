@@ -4,6 +4,7 @@
     "genre": "teste",
     "duration": "90",
     "BPM": "130",
-    "dificulty": "easy",
-    "image": "./destino"
+    "difficulty": "easy",
+    "image": "songs/0/bg.png",
+    "id": 0
 }
