@@ -5,6 +5,7 @@ from PPlay.keyboard import Keyboard
 from PPlay.sprite import Sprite
 from pygame.mixer import music
 from pygame.mixer import Sound
+import globalVar as g
 import pygame
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
@@ -75,7 +76,7 @@ class Game():
         self.hitsound = Sound("assets/hitsound.wav")
         self.hitsound.set_volume(0.3)
         self.music = music
-        self.music.load("songs/2/audio.mp3")
+        self.music.load("songs/"+str(g.CURR_SONG)+"/audio.mp3")
         self.music.set_volume(0.8)
         self.music.play()
         pass
@@ -177,10 +178,10 @@ class Game():
 
         return diff, real
 
-    def loadNotes(self, path="songs/2/hd.sc"):
+    def loadNotes(self, path="songs/"+str(g.CURR_SONG)+"/hd.sc"):
         notes = [[], [], [], [], [], [], []]
         i = False
-        self.bg = GameImage("songs/2/bg.png")
+        self.bg = GameImage("songs/"+str(g.CURR_SONG)+"/bg.png")
         self.bg.set_position(877, 142)
         with open(path, 'r') as f:
             for line in f:

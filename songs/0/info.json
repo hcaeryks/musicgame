@@ -6,5 +6,6 @@
     "BPM": "130",
     "difficulty": "easy",
     "image": "songs/0/bg.png",
-    "id": 0
+    "id": 0,
+    "wallpaper": "songs/0/ss.png"
 }

@@ -1,3 +1,5 @@
+# coding= utf-8
+
 # Pygame and System Modules
 import sys
 import time
@@ -84,24 +86,24 @@ class Animation(gameimage.GameImage):
                 self.curr_frame = self.initial_frame
             else:
                 if((not self.loop) and (self.curr_frame + 1 >= self.final_frame)):
-                    self.stop()
+                    self.curr_frame = self.final_frame - 1
+                    self.playing = False
             
     """Draws the current frame on the screen."""
     def draw(self):
         if(self.drawable):
             # Clips the frame (rect on the image)
-            clip_rect = Rect(self.curr_frame*self.width,
-                             0,
-                             self.width,
-                             self.height
-                             )
+            clip_rect = pygame.Rect(self.curr_frame*self.width,
+                                    0,
+                                    self.width,
+                                    self.height
+                                    )
 
-            window.Window.get_screen().blit(
-                self.image,
-                pygame.Rect(self.x, self.y, self.width, self.height),
-                area=clip_rect
-                )
-            
+            # Updates the pygame rect based on new positions values
+            self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+            # Blits the image with the rect and clip_rect clipped
+            window.Window.get_screen().blit(self.image, self.rect, area=clip_rect)
         
     
     #----------------------PLAYING CONTROL METHODS----------------------
