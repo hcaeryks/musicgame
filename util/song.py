@@ -7,8 +7,8 @@ class Song(Sprite):
         self.title = title.replace('_', ' ')
         self.artist = artist
         self.genre = genre
-        self.duration = duration
-        self.bpm = bpm
+        self.duration = int(duration)
+        self.bpm = int(bpm)
         self.difficulty = difficulty
         self.image_jacket = image
         self.id = idd

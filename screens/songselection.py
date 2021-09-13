@@ -12,11 +12,17 @@ class SongSelection():
         
         self.bottombar = Sprite("assets/ssbottom.png")
         self.bottombar.set_position(0, 1080-self.bottombar.height)
+        self.diffchooser = Animation("assets/diffchoose.png", 4, False)
+        self.diffchooser.set_position(1079/2-self.diffchooser.width/2, 600)
         self.selectedsongtexture = Animation("assets/songselectionselected-a.png", 10, True)
         self.selectedsongtexture.set_position(1920-1000, 1080/2-self.selectedsongtexture.height/2)
-        self.selectedsongtexture.set_total_duration(1000)
+        self.selectedsongtexture.set_total_duration(500)
         self.jacketdarken = Sprite("assets/ss.png")
 
+        self.lpress = False
+        self.rpress = False
+
+        self.currdiff = 0
         self.holdtime = 0
         self.moving = True
         self.sssoffset = 0
@@ -24,6 +30,8 @@ class SongSelection():
         self.loadSongData()
         self.loadSongsOnScreen()
         self.generateText()
+        self.ssoundscape = pygame.font.Font("assets/chopsic.otf", 20)
+        self.ssoundscape_surface = self.ssoundscape.render("Soundscape", True, (255,255,255))
 
     def loadSongData(self):
         self.songcount = 0
@@ -39,18 +47,24 @@ class SongSelection():
     def loadSongsOnScreen(self):
         self.infinitysonglist = self.list_range(self.sssoffset, 29, self.songs)
         for i in range(29):
-            self.infinitysonglist[i].set_position(1080, i*54-27-54*5)
+            self.infinitysonglist[i].set_position(1080, i*54-27-54*4)
 
     def generateText(self):
-        song = self.infinitysonglist[int(len(self.infinitysonglist)/2)+1]
+        song = self.infinitysonglist[int(len(self.infinitysonglist)/2)]
 
         self.songart = Sprite(song.wallpaper)
         self.stitle = pygame.font.Font("assets/chopsic.otf", 70)
         self.stitle_surface = self.stitle.render(song.title, True, (255,255,255))
         self.sartist = pygame.font.Font("assets/chopsic.otf", 50)
         self.sartist_surface = self.sartist.render(song.artist, True, (255,255,255))
+        self.sbpm = pygame.font.Font("assets/secrcode.ttf", 30)
+        self.sbpm_surface = self.sbpm.render("BPM: "+str(song.bpm), True, (255,255,255))
+        self.sduration = pygame.font.Font("assets/secrcode.ttf", 30)
+        self.sduration_surface = self.sduration.render("LENGTH: "+str(song.duration//60)+"m:"+str(song.duration%60)+"s", True, (255,255,255))
+        self.sgenre = pygame.font.Font("assets/secrcode.ttf", 30)
+        self.sgenre_surface = self.sgenre.render("GENRE: "+song.genre, True, (255,255,255))
 
-    def run(self):
+    def draw(self):
         self.songart.draw()
         self.jacketdarken.draw()
         self.bottombar.draw()
@@ -70,6 +84,7 @@ class SongSelection():
             self.infinitysonglist[i].draw_text(self.screen.screen)
             if self.keyboard.key_pressed("enter"):
                 g.CURR_SONG = self.infinitysonglist[int(len(self.infinitysonglist)/2)+1].id
+                g.CURR_DIFF = self.currdiff
                 g.GAME_STATE = 3
 
             self.infinitysonglist[i].y += self.diff
@@ -97,12 +112,32 @@ class SongSelection():
             self.totalmoved = 0
             self.loadSongsOnScreen()
             self.generateText()
-            
 
+        if self.keyboard.key_pressed("left") and not self.lpress:
+            self.lpress = True
+            self.currdiff -= 1
+            if self.currdiff < 0: self.currdiff = 3
+            self.diffchooser.set_curr_frame(self.currdiff)
+            print(self.currdiff)
+        elif not self.keyboard.key_pressed("left") and self.lpress: self.lpress = False
+
+        if self.keyboard.key_pressed("right") and not self.rpress:
+            self.rpress = True
+            self.currdiff += 1
+            if self.currdiff > 3: self.currdiff = 0
+            self.diffchooser.set_curr_frame(self.currdiff)
+            print(self.currdiff)
+        elif not self.keyboard.key_pressed("right") and self.rpress: self.rpress = False
+        
+        self.diffchooser.draw()
         self.selectedsongtexture.draw()
         self.selectedsongtexture.update()
+        self.screen.screen.blit(self.ssoundscape_surface, [10, 10])
         self.screen.screen.blit(self.stitle_surface, [1079/2-self.stitle_surface.get_size()[0]/2, 100])
         self.screen.screen.blit(self.sartist_surface, [1079/2-self.sartist_surface.get_size()[0]/2, 160])
+        self.screen.screen.blit(self.sbpm_surface, [150, 1010])
+        self.screen.screen.blit(self.sduration_surface, [150+50+self.sbpm_surface.get_width(), 1010])
+        self.screen.screen.blit(self.sgenre_surface, [150+100+self.sbpm_surface.get_width()+self.sduration_surface.get_width(), 1010])
     
     def list_range(self, offset, length, l):
         start = offset % len(l)
