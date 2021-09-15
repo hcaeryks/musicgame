@@ -83,9 +83,15 @@ class SongSelection():
             self.infinitysonglist[i].draw()
             self.infinitysonglist[i].draw_text(self.screen.screen)
             if self.keyboard.key_pressed("enter"):
-                g.CURR_SONG = self.infinitysonglist[int(len(self.infinitysonglist)/2)+1].id
+                diff = ""
+                if g.CURR_DIFF == 0: diff = "ez"
+                if g.CURR_DIFF == 1: diff = "nm"
+                if g.CURR_DIFF == 2: diff = "hd"
+                if g.CURR_DIFF == 3: diff = "shd"
+                g.CURR_SONG = self.infinitysonglist[int(len(self.infinitysonglist)/2)].id
                 g.CURR_DIFF = self.currdiff
-                g.GAME_STATE = 3
+                if os.path.isfile("songs/"+str(g.CURR_SONG)+"/"+diff+".sc"):
+                    g.GAME_STATE = 3
 
             self.infinitysonglist[i].y += self.diff
         if pUp and not self.moving:
@@ -113,12 +119,14 @@ class SongSelection():
             self.loadSongsOnScreen()
             self.generateText()
 
+        if self.keyboard.key_pressed("ESC"):
+            g.GAME_STATE = 0
+
         if self.keyboard.key_pressed("left") and not self.lpress:
             self.lpress = True
             self.currdiff -= 1
             if self.currdiff < 0: self.currdiff = 3
             self.diffchooser.set_curr_frame(self.currdiff)
-            print(self.currdiff)
         elif not self.keyboard.key_pressed("left") and self.lpress: self.lpress = False
 
         if self.keyboard.key_pressed("right") and not self.rpress:
@@ -126,7 +134,6 @@ class SongSelection():
             self.currdiff += 1
             if self.currdiff > 3: self.currdiff = 0
             self.diffchooser.set_curr_frame(self.currdiff)
-            print(self.currdiff)
         elif not self.keyboard.key_pressed("right") and self.rpress: self.rpress = False
         
         self.diffchooser.draw()

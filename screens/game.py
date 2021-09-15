@@ -1,3 +1,4 @@
+from util.hit import Hit
 from PPlay.gameimage import GameImage
 from PPlay import window
 from PPlay.animation import Animation
@@ -5,6 +6,7 @@ from PPlay.keyboard import Keyboard
 from PPlay.sprite import Sprite
 from pygame.mixer import music
 from pygame.mixer import Sound
+from math import log10
 import globalVar as g
 import pygame
 
@@ -16,13 +18,8 @@ class Game():
     def __init__(self, screen):
         self.velocity = 1.5
         self.screen = screen
-        self.diff = "HARD"
         self.keyboard = Keyboard()
 
-        if self.diff == "HARD": self.dcolor = (214, 50, 39)
-        if self.diff == "NORMAL": self.dcolor = (39, 162, 214)
-        if self.diff == "EASY": self.dcolor = (39, 214, 65)
-        
 
         self.gameplay = Sprite("assets/gameplay.png")
         self.lifetxt = Sprite("assets/life.png")
@@ -32,6 +29,7 @@ class Game():
         self.hpbar = Animation("assets/hpbar.png", 100, True)
         self.boostbar = Animation("assets/boostbar.png", 100, True)
         self.boosteffect = Animation("assets/boosteffect.png", 35, False)
+        self.grading = Animation("assets/grades.png", 3, False)
         self.lanelights = [Animation("assets/lanelighta.png", 20, False) for x in range(6)]
         self.keylights = [Sprite("assets/keypress.png") for x in range(6)]
         self.explosions = [Animation("assets/explosion9.png", 9, False) for x in range(6)]
@@ -41,7 +39,15 @@ class Game():
         self.oldpos = 0
         self.deltamus = 0
         self.notes = self.loadNotes()
+        self.allhits = []
+        
+        if self.diff == "shd": self.dcolor = (151, 44, 222)
+        if self.diff == "hd": self.dcolor = (214, 50, 39)
+        if self.diff == "nm": self.dcolor = (39, 162, 214)
+        if self.diff == "ez": self.dcolor = (39, 214, 65)
+        
 
+        self.grading.set_position(373-self.grading.width/2, 1080/2)
         self.lifetxt.set_position(21, 5)
         self.infomenu.set_position(620, self.screen.height/2)
         self.error.set_position(877-850, 142)
@@ -66,12 +72,23 @@ class Game():
         [self.lanelights[e].set_position(135+78*e+2*e, 1080-304-self.lanelights[e].height) for e in range(len(self.lanelights))]
         [self.keylights[e].set_position(134+80*e, 1080-304+20) for e in range(len(self.keylights))]
 
+        self.points = 0
+        self.maxcombo = 0
         self.combo = 0
         self.hp = 100
         self.hpdiff = 0
         self.errortime = 200
         self.boost = 0
         self.boostdiff = 0
+        self.boosttime = 0
+        self.time_end = 0.1
+        self.grade_disappear = 0
+        self.continue_game = True
+
+        self.hitP = 0
+        self.hitA = 0
+        self.hitT = 0
+        self.hitM = 0
 
         self.hitsound = Sound("assets/hitsound.wav")
         self.hitsound.set_volume(0.3)
@@ -105,11 +122,13 @@ class Game():
                 self.notes[x][i-n].y += (self.velocity * 1000) * self.deltamus
                 if self.notes[x][i-n].y + self.notes[x][i-n].height >= 0 and self.notes[x][i-n].y < 1080-304-20:
                     self.notes[x][i-n].draw()
-                elif self.notes[x][i-n].y >= 1080-304-20+200:
+                elif self.notes[x][i-n].y >= 777+300:
                     if x < 6:
-                        self.errortime = 1 -self.screen.delta_time()
+                        self.errortime = 1 - self.screen.delta_time()
                         self.hpdiff -= 15
                         self.combo = 0
+                        self.hitM += 1
+                        self.allhits.append(Hit(self.music.get_pos(), 0, -300))
                     self.notes[x].pop(i-n)
                     n += 1
         
@@ -121,25 +140,49 @@ class Game():
                 self.keylights[x].draw()
                 if self.keypressesCurr[x] == False and self.notes[x] != []:
                     self.keypressesCurr[x] = True
-                    if self.notes[x][0].y > 1080-304-20-400:
+                    if self.notes[x][0].y > 777-300:
                         self.hitsound.stop()
                         self.hitsound.play()
                         self.explosions[x].stop()
                         self.explosions[x].play()
-                        self.notes[x].pop(0)
                         self.hpdiff += 5
                         if self.boostdiff < 100: self.boostdiff += 1
                         self.combo += 1
+                        self.grade_disappear = 0.5 
+                        distance = self.notes[x][0].y - 777
+                        tier, mult = 0, 1
+                        if distance <= 40 and distance >= -40:
+                            self.grading.set_curr_frame(0)
+                            self.hitP += 1
+                            tier = 3
+                        elif distance <= 100 and distance >= -100:
+                            self.grading.set_curr_frame(1)
+                            self.hitA += 1
+                            tier = 2
+                        else:
+                            self.grading.set_curr_frame(2)
+                            self.hitT += 1
+                            tier = 1
+                        if self.boosttime > 0: mult = 5
+                        self.points += tier * mult * log10(self.combo)
+                        self.allhits.append(Hit(self.music.get_pos(), tier, 0-distance))
+                        self.notes[x].pop(0)
                     else:
                         self.errortime = 1 -self.screen.delta_time()
                         self.combo = 0
                         self.hpdiff -= 15
+                        self.allhits.append(Hit(self.music.get_pos(), 0, 300))
             elif self.keypressesCurr[x] == True:
                 self.keypressesCurr[x] = False
 
         if self.keyboard.key_pressed("SPACE") and self.boost == 100:
             self.boostdiff = -300
+            self.boosttime = 5
             self.boosteffect.play()
+
+        if self.keyboard.key_pressed("ESC"):
+            self.music.stop()
+            g.GAME_STATE = 2
 
         if self.boosteffect.is_playing():
             self.boosteffect.update()
@@ -149,6 +192,34 @@ class Game():
             self.judgeline.draw()
             self.judgeline.update()
 
+        empty = 0
+        if self.continue_game:
+            for x in range(len(self.notes)-1):
+                if len(self.notes[x]) == 0:
+                    empty += 1
+
+        if empty == 6:
+            self.continue_game = False
+            self.time_end = 2
+
+        if not self.continue_game:
+            self.time_end -= self.screen.delta_time()
+
+        if self.boosttime > 0:
+            self.boosttime -= self.screen.delta_time()
+
+        if self.time_end <= 0 or self.hp <= 0:
+            self.music.stop()
+            total = self.hitP + self.hitA + self.hitT + self.hitM
+            percentage = (self.hitP*10+self.hitA*6+self.hitT*3)/total
+            g.SCORE_INFO[0] = self.allhits
+            g.SCORE_INFO[2] = round(percentage*10, 2)
+            g.SCORE_INFO[3] = self.maxcombo
+            g.SCORE_INFO[4] = [self.hitP, self.hitA, self.hitT, self.hitM]
+            g.SCORE_INFO[5] = round(self.points, 2)
+            g.SCORE_INFO[6] = self.title
+            g.GAME_STATE = 4
+
         [e.draw() for e in self.lanelights]
         [e.update() for e in self.lanelights]
 
@@ -156,6 +227,13 @@ class Game():
         self.hpdiff, self.hp = self.diffCalc(self.hpdiff, self.hp)
         [e.update() for e in self.explosions]
         [e.draw() for e in self.explosions]
+
+        if self.grade_disappear > 0:
+            self.grade_disappear -= self.screen.delta_time()
+            self.grading.draw()
+
+        if self.combo > self.maxcombo:
+            self.maxcombo = self.combo
 
         self.screen.draw_text(self.diff, 862+828/2-((len(self.diff)*45)/2), self.screen.height - 70 - 30, 70, self.dcolor, "Arial")
         self.screen.draw_text(self.title, 862+828/2-((len(self.title)*40)/2), 20, 70, (200, 200, 200), "Arial")
@@ -178,10 +256,16 @@ class Game():
 
         return diff, real
 
-    def loadNotes(self, path="songs/"+str(g.CURR_SONG)+"/hd.sc"):
+    def loadNotes(self):
         notes = [[], [], [], [], [], [], []]
         i = False
+        self.diff = ""
+        if g.CURR_DIFF == 0: self.diff = "ez"
+        if g.CURR_DIFF == 1: self.diff = "nm"
+        if g.CURR_DIFF == 2: self.diff = "hd"
+        if g.CURR_DIFF == 3: self.diff = "shd"
         self.bg = GameImage("songs/"+str(g.CURR_SONG)+"/bg.png")
+        path = "songs/"+str(g.CURR_SONG)+"/"+self.diff+".sc"
         self.bg.set_position(877, 142)
         with open(path, 'r') as f:
             for line in f:
@@ -217,6 +301,7 @@ class Game():
                     self.artist = self.artist.replace("_", " ")[:-1]
         measures = int((self.bpm/4) * (self.length/60))
         timebmeas = int(self.length/measures)
+        g.SCORE_INFO[1] = self.length * 1000
         for i in range(measures):
             note = Sprite("assets/bar.png")
             note.set_position(134, 1080-304-((timebmeas * 1000) * i) * self.velocity - 2)
