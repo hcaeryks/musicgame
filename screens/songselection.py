@@ -14,6 +14,8 @@ class SongSelection():
         self.bottombar.set_position(0, 1080-self.bottombar.height)
         self.diffchooser = Animation("assets/diffchoose.png", 4, False)
         self.diffchooser.set_position(1079/2-self.diffchooser.width/2, 600)
+        self.charterror = Animation("assets/charterror.png", 2, False)
+        self.charterror.set_position(1079/2-self.charterror.width/2, 600-self.charterror.height-10)
         self.selectedsongtexture = Animation("assets/songselectionselected-a.png", 10, True)
         self.selectedsongtexture.set_position(1920-1000, 1080/2-self.selectedsongtexture.height/2)
         self.selectedsongtexture.set_total_duration(500)
@@ -22,6 +24,7 @@ class SongSelection():
         self.lpress = False
         self.rpress = False
 
+        self.charterrortime = 0
         self.currdiff = 0
         self.holdtime = 0
         self.moving = True
@@ -68,6 +71,7 @@ class SongSelection():
         self.songart.draw()
         self.jacketdarken.draw()
         self.bottombar.draw()
+        self.charterror.draw()
         pUp = self.keyboard.key_pressed("up")
         pDw = self.keyboard.key_pressed("down")
         self.speed = 0
@@ -92,6 +96,9 @@ class SongSelection():
                 g.CURR_DIFF = self.currdiff
                 if os.path.isfile("songs/"+str(g.CURR_SONG)+"/"+diff+".sc"):
                     g.GAME_STATE = 3
+                else:
+                    self.charterror.set_curr_frame(1)
+                    self.charterrortime = 2
 
             self.infinitysonglist[i].y += self.diff
         if pUp and not self.moving:
@@ -118,6 +125,10 @@ class SongSelection():
             self.totalmoved = 0
             self.loadSongsOnScreen()
             self.generateText()
+
+        if self.charterrortime > 0:
+            self.charterrortime -= self.screen.delta_time()
+            if self.charterrortime <= 0: self.charterror.set_curr_frame(0)
 
         if self.keyboard.key_pressed("ESC"):
             g.GAME_STATE = 0

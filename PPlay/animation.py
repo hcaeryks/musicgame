@@ -86,7 +86,7 @@ class Animation(gameimage.GameImage):
                 self.curr_frame = self.initial_frame
             else:
                 if((not self.loop) and (self.curr_frame + 1 >= self.final_frame)):
-                    self.curr_frame = self.final_frame - 1
+                    self.curr_frame = 0
                     self.playing = False
             
     """Draws the current frame on the screen."""
@@ -114,6 +114,7 @@ class Animation(gameimage.GameImage):
 
     """Method responsible for starting the execution of the animation."""
     def play(self):
+        self.curr_frame = 0
         self.playing = True
 
     """Method responsible fo pausing the Animation."""
