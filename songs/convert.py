@@ -1,4 +1,4 @@
-with open("ParagonX9 - Chaoz Japan (Mage) [Myle's Hard].osu") as file:
+with open("Feryquitous - Chat perdu (Sillyp) [MX].osu") as file:
     data = file.readlines()
     newArr = []
     for line in data[64:]:

@@ -1,0 +1,11 @@
+{
+    "id": 4,
+    "name": "Chat perdu",
+    "artist": "Feryquitous",
+    "genre": "Jazz",
+    "duration": "125",
+    "BPM": "170",
+    "difficulty": "hard",
+    "image": "songs/4/bg.png",
+    "wallpaper": "songs/4/ss.png"
+}

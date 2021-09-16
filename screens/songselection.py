@@ -97,13 +97,14 @@ class SongSelection():
             if self.keyboard.key_pressed("enter"):
                 self.cooldown = True
                 diff = ""
+                g.CURR_SONG = self.infinitysonglist[int(len(self.infinitysonglist)/2)].id
+                g.CURR_DIFF = self.currdiff
                 if g.CURR_DIFF == 0: diff = "ez"
                 if g.CURR_DIFF == 1: diff = "nm"
                 if g.CURR_DIFF == 2: diff = "hd"
                 if g.CURR_DIFF == 3: diff = "shd"
-                g.CURR_SONG = self.infinitysonglist[int(len(self.infinitysonglist)/2)].id
-                g.CURR_DIFF = self.currdiff
                 if os.path.isfile("songs/"+str(g.CURR_SONG)+"/"+diff+".sc"):
+                    print(g.CURR_DIFF,g.CURR_SONG,"songs/"+str(g.CURR_SONG)+"/"+diff+".sc")
                     g.GAME_STATE = 3
                 else:
                     self.charterror.set_curr_frame(1)
