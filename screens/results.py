@@ -27,7 +27,7 @@ class Results():
 
         self.graph = Sprite("assets/graph.png")
         self.results = Sprite("assets/results.png")
-        self.bgresults = Sprite("assets/bgresults.png")
+        #self.bgresults = Sprite("assets/bgresults.png")
         self.graphtext = Sprite("assets/graphtext.png")
         self.infoboard = Sprite("assets/infoboard.png")
         self.esctoleave = Sprite("assets/esctoleave.png")
@@ -63,7 +63,7 @@ class Results():
 
 
     def draw(self):
-        self.bgresults.draw()
+        #self.bgresults.draw()
         self.graph.draw()
         self.graphtext.draw()
         self.results.draw()

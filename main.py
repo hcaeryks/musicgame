@@ -5,6 +5,7 @@ from screens.home import Home
 from screens.results import Results
 from screens.options import Options
 from PPlay.keyboard import *
+from PPlay.sprite import *
 import globalVar
 import json
 
@@ -27,6 +28,7 @@ scrOptions = Options(window)
 #globalVar.GAME_STATE = 4
 
 keyboard = Keyboard()
+bg = Sprite("assets/bgresults.png")
 
 file = open("config/controls.json", "r")
 controls = json.load(file)
@@ -53,7 +55,7 @@ while globalVar.GAME_STATE != -1:
         globalVar.CURR_PLY = 0
 
 
-    window.set_background_color((0, 0, 0))
+    bg.draw()
     if globalVar.GAME_STATE == 0:
         scrHome.draw()
     elif globalVar.GAME_STATE == 1:

@@ -7,8 +7,10 @@ class Home():
     def __init__(self, screen):
         self.mouse = Mouse()
         self.screen = screen
-        self.font = pygame.font.Font("assets/secrcode.ttf", 40)
-        self.texts = [["Song Selection", [0, 0, 255], 2], ["Settings", [0, 0, 255], 1], ["Exit", [0, 0, 255], -1]]
+        self.titlehome = Sprite("assets/titlehome.png")
+        self.titlehome.set_position(self.screen.width/2 - self.titlehome.width/2, 200)
+        self.font = pygame.font.Font("assets/chopsic.otf", 40)
+        self.texts = [["Song Selection", [220, 220, 220], 2], ["Settings", [220, 220, 220], 1], ["Exit", [220, 220, 220], -1]]
         self.buttons = []
         self.surfaces = []
         self.createButtons()
@@ -35,12 +37,13 @@ class Home():
             
 
     def draw(self):
+        self.titlehome.draw()
         self.update()
         self.drawButtons()
 
     def update(self):
         for i in range(len(self.buttons)):
-            self.texts[i][1] = [0, 0, 255]
+            self.texts[i][1] = [220, 220, 220]
             if self.mouse.is_over_object(self.buttons[i]):
                 self.texts[i][1] = [0, 255, 0]
                 if self.mouse.is_button_pressed(1):

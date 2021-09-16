@@ -20,7 +20,6 @@ class Game():
         self.screen = screen
         self.keyboard = Keyboard()
 
-
         self.gameplay = Sprite("assets/gameplay.png")
         self.lifetxt = Sprite("assets/life.png")
         self.infomenu = Sprite("assets/infomenu.png")
@@ -33,7 +32,7 @@ class Game():
         self.lanelights = [Animation("assets/lanelighta.png", 20, False) for x in range(6)]
         self.keylights = [Sprite("assets/keypress.png") for x in range(6)]
         self.explosions = [Animation("assets/explosion9.png", 9, False) for x in range(6)]
-        self.keypresses = ["S", "D", "F", "J", "K", "L"]
+        self.keypresses = [g.NOTES[x] for x in range(6)]
         self.keypressesCurr = [False, False, False, False, False, False]
 
         self.oldpos = 0
@@ -41,10 +40,18 @@ class Game():
         self.notes = self.loadNotes()
         self.allhits = []
         
-        if self.diff == "shd": self.dcolor = (151, 44, 222)
-        if self.diff == "hd": self.dcolor = (214, 50, 39)
-        if self.diff == "nm": self.dcolor = (39, 162, 214)
-        if self.diff == "ez": self.dcolor = (39, 214, 65)
+        if self.diff == "shd": 
+            self.dcolor = (151, 44, 222)
+            self.diff = "SUPER HARD"
+        if self.diff == "hd": 
+            self.dcolor = (214, 50, 39)
+            self.diff = "HARD"
+        if self.diff == "nm": 
+            self.dcolor = (39, 162, 214)
+            self.diff = "NORMAL"
+        if self.diff == "ez": 
+            self.dcolor = (39, 214, 65)
+            self.diff = "EASY"
         
 
         self.grading.set_position(373-self.grading.width/2, 1080/2)
@@ -89,6 +96,12 @@ class Game():
         self.hitA = 0
         self.hitT = 0
         self.hitM = 0
+
+        self.sbig = pygame.font.Font("assets/chopsic.otf", 50)
+        self.ssmall = pygame.font.Font("assets/chopsic.otf", 40)
+        self.stitle = self.sbig.render(self.title, True, (255, 255, 255))
+        self.sartist = self.ssmall.render(self.artist, True, (255, 255, 255))
+        self.sdiff = self.sbig.render(self.diff, True, self.dcolor)
 
         self.hitsound = Sound("assets/hitsound.wav")
         self.hitsound.set_volume(0.3)
@@ -235,9 +248,9 @@ class Game():
         if self.combo > self.maxcombo:
             self.maxcombo = self.combo
 
-        self.screen.draw_text(self.diff, 862+828/2-((len(self.diff)*45)/2), self.screen.height - 70 - 30, 70, self.dcolor, "Arial")
-        self.screen.draw_text(self.title, 862+828/2-((len(self.title)*40)/2), 20, 70, (200, 200, 200), "Arial")
-        self.screen.draw_text(self.artist, 862+828/2-((len(self.artist)*18)/2), 20+70, 30, (200, 200, 200), "Arial")
+        self.screen.screen.blit(self.stitle, [633+(1920-633)/2-self.stitle.get_width()/2,30])
+        self.screen.screen.blit(self.sartist, [633+(1920-633)/2-self.sartist.get_width()/2,30+self.stitle.get_height()])
+        self.screen.screen.blit(self.sdiff, [633+(1920-633)/2-self.sdiff.get_width()/2,1080-30-self.sdiff.get_height()])
         self.screen.draw_text(str(self.combo), 374-(len(str(self.combo))*50+(len(str(self.combo))-1)*3)//2, 200, 100, (200,200,200), "Impact")
         pass
 
