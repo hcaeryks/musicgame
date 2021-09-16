@@ -1,3 +1,10 @@
+#TITLE Chat perdu
+#ARTIST Feryquitous
+#GENRE Jazz
+#BPM 170
+#LENGTH 125
+
+###SONGDATA###
 #2558:0:1:0
 #2735:5:1:0
 #2911:3:1:0
