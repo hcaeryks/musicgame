@@ -1,6 +1,6 @@
 #TITLE ((Tight)) N' Light<>
 #ARTIST Anorian
-#GENRE Chill
+#GENRE Soundtrack
 #BPM 133
 #LENGTH 90
 

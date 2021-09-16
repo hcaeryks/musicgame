@@ -6,8 +6,7 @@ from screens.results import Results
 from screens.options import Options
 from PPlay.keyboard import *
 from PPlay.sprite import *
-import globalVar
-import json
+import globalVar, util.settingsreader as settingsreader
 
 window = Window(1920, 1080)
 
@@ -30,18 +29,7 @@ scrOptions = Options(window)
 keyboard = Keyboard()
 bg = Sprite("assets/bgresults.png")
 
-file = open("config/controls.json", "r")
-controls = json.load(file)
-file.close()
-for control in controls:
-    key = controls[control]
-    if control.startswith("Note"):
-        if not control.endswith("Speed"):
-            note_number = control.split()
-            note_number = int(note_number[1])-1
-            globalVar.NOTES[note_number] = key
-        else:
-            globalVar.NOTE_SPEED = float(key)
+settingsreader.read_settings()
 
 while globalVar.GAME_STATE != -1:
     #print(0 if window.delta_time() <= 0 else 1/window.delta_time())

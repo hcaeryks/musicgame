@@ -7,8 +7,7 @@ from PPlay.sprite import Sprite
 from pygame.mixer import music
 from pygame.mixer import Sound
 from math import log10
-import globalVar as g
-import pygame
+import globalVar as g, pygame, util.settingsreader as settingsreader
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.mixer.init()
@@ -16,10 +15,11 @@ pygame.init()
 
 class Game():
     def __init__(self, screen):
-        self.velocity = 1
         self.screen = screen
         self.keyboard = Keyboard()
 
+        settingsreader.read_settings()
+        
         self.gameplay = Sprite("assets/gameplay.png")
         self.lifetxt = Sprite("assets/life.png")
         self.infomenu = Sprite("assets/infomenu.png")
@@ -37,6 +37,7 @@ class Game():
 
         self.oldpos = 0
         self.deltamus = 0
+        self.velocity = g.NOTE_SPEED
         self.notes = self.loadNotes()
         self.allhits = []
         
@@ -224,7 +225,7 @@ class Game():
         if self.time_end <= 0 or self.hp <= 0:
             self.music.stop()
             total = self.hitP + self.hitA + self.hitT + self.hitM
-            percentage = (self.hitP*10+self.hitA*6+self.hitT*3)/total
+            percentage = (self.hitP*10+self.hitA*7+self.hitT*3)/total
             g.SCORE_INFO[0] = self.allhits
             g.SCORE_INFO[2] = round(percentage*10, 2)
             g.SCORE_INFO[3] = self.maxcombo
@@ -317,7 +318,7 @@ class Game():
         g.SCORE_INFO[1] = self.length * 1000
         for i in range(measures):
             note = Sprite("assets/bar.png")
-            note.set_position(134, 1080-304-((timebmeas * 1000) * i) * self.velocity - 2)
+            note.set_position(134, 1080-374-((timebmeas * 1000) * i) * self.velocity - 2)
             notes[6].append(note)
 
         return notes
