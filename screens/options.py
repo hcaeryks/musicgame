@@ -12,7 +12,7 @@ class Options():
         self.file = open("config/controls.json", "r")
         self.controls = json.load(self.file)
         self.file.close()
-        self.font = pygame.font.Font("assets/futrfw.ttf", 30)
+        self.font = pygame.font.Font("assets/secrcode.ttf", 30)
         self.screen = screen
         self.keyboard = Keyboard()
         self.commands = []
@@ -46,13 +46,13 @@ class Options():
     def drawButtons(self):
         for i in range(len(self.buttons)):
             self.buttons[i].draw()
-            self.screen.screen.blit(self.text_surface[i], [self.buttons[i].x + 10, self.buttons[i].y + self.buttons[i].height/2 - self.text_surface[i].get_height()])
+            self.screen.screen.blit(self.text_surface[i], [50 + self.buttons[i].x + 10, self.buttons[i].y + self.buttons[i].height/2 - self.text_surface[i].get_height()/2])
             if self.selection == i:
                 color = [0, 255, 0]
             else:
                 color = [0, 180, 255]
             key_surface = self.font.render(str(self.controls[self.commands[i]]), True, color)
-            self.screen.screen.blit(key_surface, [self.buttons[i].x + self.buttons[i].width - 10 - key_surface.get_width(), self.buttons[i].y + self.buttons[i].height/2 - self.text_surface[i].get_height()])
+            self.screen.screen.blit(key_surface, [self.buttons[i].x + self.buttons[i].width - 10 - key_surface.get_width() - 50, self.buttons[i].y + self.buttons[i].height/2 - self.text_surface[i].get_height()/2])
     
     def draw(self):
         self.update()

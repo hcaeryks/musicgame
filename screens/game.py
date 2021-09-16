@@ -16,7 +16,7 @@ pygame.init()
 
 class Game():
     def __init__(self, screen):
-        self.velocity = 1.5
+        self.velocity = 1
         self.screen = screen
         self.keyboard = Keyboard()
 
