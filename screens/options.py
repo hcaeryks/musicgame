@@ -14,9 +14,12 @@ class Options():
         self.exit_cooldown = False
         self.exit_cooldown_time = 0.1
         self.exit_time = 0
+
         self.cooldown = False
+        self.volume_cooldown_time = 0.1
         self.cooldown_time = 0.3
         self.hold = 0
+        
         self.mouse = Mouse()
         self.selection = -1
         self.file = open("config/controls.json", "r")
@@ -36,7 +39,7 @@ class Options():
     def createButtons(self):
         backbutton = Sprite("assets/backbutton.png")
         x = self.screen.width/2 - backbutton.width/2
-        y_start = 200
+        y_start = 150
         space = 10
         for i in range(len(self.commands)):
             backbutton = Sprite("assets/backbutton.png")
@@ -84,40 +87,67 @@ class Options():
                 globalVar.GAME_STATE = 0
                 self.start_cooldown = True
             if self.selection > -1 and self.selection < len(self.commands):
-                if not self.commands[self.selection].endswith("Speed"):
-                    key = self.keyboard.return_keys_pressed()
-                    if len(key) > 0:
-                        self.controls[self.commands[self.selection]] = key[0]
-                        globalVar.NOTES[self.selection] = key[0]
-                        self.updatejson()
-                        self.selection = -1
-                        self.exit_cooldown = True
-                else:
-                    if self.keyboard.key_pressed("ENTER"):
-                        self.selection = -1
+                if self.commands[self.selection].startswith("Note"):
+                    if not self.commands[self.selection].endswith("Speed"):
+                        key = self.keyboard.return_keys_pressed()
+                        if len(key) > 0:
+                            self.controls[self.commands[self.selection]] = key[0]
+                            globalVar.NOTES[self.selection] = key[0]
+                            self.updatejson()
+                            self.selection = -1
+                            self.exit_cooldown = True
                     else:
-                        if not self.keyboard.key_pressed("UP") and not self.keyboard.key_pressed("DOWN"):
-                            self.hold = 0
-                            self.cooldown = False
+                        if self.keyboard.key_pressed("ENTER"):
+                            self.selection = -1
                         else:
-                            if self.hold >= self.cooldown_time:
+                            if not self.keyboard.key_pressed("UP") and not self.keyboard.key_pressed("DOWN"):
                                 self.hold = 0
                                 self.cooldown = False
-                            if self.keyboard.key_pressed("UP") and float(self.controls[self.commands[self.selection]]) < 2:
-                                if self.cooldown:
-                                    self.hold += self.screen.delta_time()
-                                else:
-                                    self.controls[self.commands[self.selection]] = str(round(float(self.controls[self.commands[self.selection]]) + 0.1, 1))
-                                    self.updatejson()
-                                    self.cooldown = True
+                            else:
+                                if self.hold >= self.cooldown_time:
+                                    self.hold = 0
+                                    self.cooldown = False
+                                if self.keyboard.key_pressed("UP") and float(self.controls[self.commands[self.selection]]) < 2:
+                                    if self.cooldown:
+                                        self.hold += self.screen.delta_time()
+                                    else:
+                                        self.controls[self.commands[self.selection]] = str(round(float(self.controls[self.commands[self.selection]]) + 0.1, 1))
+                                        self.updatejson()
+                                        self.cooldown = True
+                                    
+                                if self.keyboard.key_pressed("DOWN") and float(self.controls[self.commands[self.selection]]) > 1:
+                                    if self.cooldown:
+                                        self.hold += self.screen.delta_time()
+                                    else:
+                                        self.controls[self.commands[self.selection]] = str(round(float(self.controls[self.commands[self.selection]]) - 0.1, 1))
+                                        self.updatejson()
+                                        self.cooldown = True
+                if self.commands[self.selection].startswith("Volume"):
+                    if self.hold >= self.volume_cooldown_time:
+                                    self.hold = 0
+                                    self.cooldown = False
+                    if not self.keyboard.key_pressed("UP") and not self.keyboard.key_pressed("DOWN") and self.cooldown:
+                                self.hold = 0
+                                self.cooldown = False
                                 
-                            if self.keyboard.key_pressed("DOWN") and float(self.controls[self.commands[self.selection]]) > 1:
-                                if self.cooldown:
-                                    self.hold += self.screen.delta_time()
-                                else:
-                                    self.controls[self.commands[self.selection]] = str(round(float(self.controls[self.commands[self.selection]]) - 0.1, 1))
-                                    self.updatejson()
-                                    self.cooldown = True
+                    if self.keyboard.key_pressed("ENTER"):
+                            self.selection = -1
+                            
+                    elif self.keyboard.key_pressed("UP") and int(self.controls[self.commands[self.selection]]) < 100:
+                        if self.cooldown:
+                            self.hold += self.screen.delta_time()
+                        else:
+                            self.controls[self.commands[self.selection]] = str(int(self.controls[self.commands[self.selection]]) + 1)
+                            self.updatejson()
+                            self.cooldown = True
+                        
+                    elif self.keyboard.key_pressed("DOWN") and int(self.controls[self.commands[self.selection]]) > 1:
+                        if self.cooldown:
+                            self.hold += self.screen.delta_time()
+                        else:
+                            self.controls[self.commands[self.selection]] = str(int(self.controls[self.commands[self.selection]]) - 1)
+                            self.updatejson()
+                            self.cooldown = True
             else:
                 for i in range(len(self.buttons)):
                     if self.mouse.is_over_object(self.buttons[i]) and self.mouse.is_button_pressed(1):

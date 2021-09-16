@@ -8,3 +8,4 @@ SCORE_INFO = [0,0,0,0,[0,0,0,0],0,0]
 
 NOTES = ["S", "D", "F", "J", "K", "L"]
 NOTE_SPEED = 1
+VOLUME = 100

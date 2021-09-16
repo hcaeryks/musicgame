@@ -13,3 +13,5 @@ def read_settings():
                 globalVar.NOTES[note_number] = key
             else:
                 globalVar.NOTE_SPEED = float(key)
+        if control.startswith("Volume"):
+            globalVar.VOLUME = int(key)
