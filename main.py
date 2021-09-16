@@ -9,6 +9,7 @@ from PPlay.sprite import *
 import globalVar, util.settingsreader as settingsreader
 
 window = Window(1920, 1080)
+window.set_title("Soundscape")
 
 scrRes = None
 scrGame = None
