@@ -104,11 +104,11 @@ class Game():
         self.sartist = self.ssmall.render(self.artist, True, (255, 255, 255))
         self.sdiff = self.sbig.render(self.diff, True, self.dcolor)
 
-        self.hitsound = Sound("assets/hitsound.wav")
-        self.hitsound.set_volume(0.3)
         self.music = music
         self.music.load("songs/"+str(g.CURR_SONG)+"/audio.mp3")
-        self.music.set_volume(0.8)
+        self.hitsound = Sound("assets/hitsound.wav")
+        self.hitsound.set_volume(1*(g.VOLUME/100))
+        self.music.set_volume(1*(g.VOLUME/100))
         self.music.play()
         pass
 
