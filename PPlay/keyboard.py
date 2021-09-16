@@ -25,7 +25,15 @@ class Keyboard():
         for event in events:
             if event.type == pygame.KEYDOWN:
                 print(event.key)
-                
+    
+    def return_keys_pressed(self):
+        keys = ["LEFT", "RIGHT", "UP", "DOWN", "ENTER", "RETURN", "ESCAPE", "ESC", "SPACE", "LEFT_CONTROL", "LEFT_SHIFT", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+        keys_pressed = []
+        for key in keys:
+            if self.key_pressed(key):
+                keys_pressed.append(key)
+        return keys_pressed
+    
     def to_pattern(self, key):
         if((key=="LEFT") or (key=="left")):
             return pygame.K_LEFT
