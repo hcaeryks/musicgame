@@ -7,6 +7,16 @@ import pygame
 
 class Options():
     def __init__(self, screen):
+        self.start_cooldown = True
+        self.start_cooldown_time = 0.1
+        self.start_time = 0
+        
+        self.exit_cooldown = False
+        self.exit_cooldown_time = 0.1
+        self.exit_time = 0
+        self.cooldown = False
+        self.cooldown_time = 0.3
+        self.hold = 0
         self.mouse = Mouse()
         self.selection = -1
         self.file = open("config/controls.json", "r")
@@ -59,16 +69,56 @@ class Options():
         self.drawButtons()
     
     def update(self):
-        if self.keyboard.key_pressed("ESC"):
-            globalVar.GAME_STATE = 0        
-        if self.selection > -1 and self.selection < len(self.commands):
-            key = self.keyboard.return_keys_pressed()
-            if len(key) > 0:
-                self.controls[self.commands[self.selection]] = key[0]
-                globalVar.NOTES[self.selection] = key[0]
-                self.updatejson()
-                self.selection = -1
+        if self.start_cooldown:
+            self.start_time += self.screen.delta_time()
+            if self.start_time >= self.start_cooldown_time:
+                self.start_cooldown = False
+                self.start_time = 0
         else:
-            for i in range(len(self.buttons)):
-                if self.mouse.is_over_object(self.buttons[i]) and self.mouse.is_button_pressed(1):
-                    self.selection = i
+            if self.exit_cooldown:
+                self.exit_time += self.screen.delta_time()
+                if self.exit_time >= self.exit_time:
+                    self.exit_cooldown = False
+                    self.exit_time = 0
+            if self.keyboard.key_pressed("ESC") and self.selection == -1 and not self.exit_cooldown:
+                globalVar.GAME_STATE = 0
+                self.start_cooldown = True
+            if self.selection > -1 and self.selection < len(self.commands):
+                if not self.commands[self.selection].endswith("Speed"):
+                    key = self.keyboard.return_keys_pressed()
+                    if len(key) > 0:
+                        self.controls[self.commands[self.selection]] = key[0]
+                        globalVar.NOTES[self.selection] = key[0]
+                        self.updatejson()
+                        self.selection = -1
+                        self.exit_cooldown = True
+                else:
+                    if self.keyboard.key_pressed("ENTER"):
+                        self.selection = -1
+                    else:
+                        if not self.keyboard.key_pressed("UP") and not self.keyboard.key_pressed("DOWN"):
+                            self.hold = 0
+                            self.cooldown = False
+                        else:
+                            if self.hold >= self.cooldown_time:
+                                self.hold = 0
+                                self.cooldown = False
+                            if self.keyboard.key_pressed("UP") and float(self.controls[self.commands[self.selection]]) < 2:
+                                if self.cooldown:
+                                    self.hold += self.screen.delta_time()
+                                else:
+                                    self.controls[self.commands[self.selection]] = str(round(float(self.controls[self.commands[self.selection]]) + 0.1, 1))
+                                    self.updatejson()
+                                    self.cooldown = True
+                                
+                            if self.keyboard.key_pressed("DOWN") and float(self.controls[self.commands[self.selection]]) > 1:
+                                if self.cooldown:
+                                    self.hold += self.screen.delta_time()
+                                else:
+                                    self.controls[self.commands[self.selection]] = str(round(float(self.controls[self.commands[self.selection]]) - 0.1, 1))
+                                    self.updatejson()
+                                    self.cooldown = True
+            else:
+                for i in range(len(self.buttons)):
+                    if self.mouse.is_over_object(self.buttons[i]) and self.mouse.is_button_pressed(1):
+                        self.selection = i

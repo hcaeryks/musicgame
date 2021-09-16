@@ -7,3 +7,4 @@ SCORE_INFO = [0,0,0,0,[0,0,0,0],0,0]
 # Controles:
 
 NOTES = ["S", "D", "F", "J", "K", "L"]
+NOTE_SPEED = 1
