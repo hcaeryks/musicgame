@@ -56,7 +56,7 @@ class SongSelection():
         song = self.infinitysonglist[int(len(self.infinitysonglist)/2)]
 
         self.songart = Sprite(song.wallpaper)
-        self.stitle = pygame.font.Font("assets/chopsic.otf", 70)
+        self.stitle = pygame.font.Font("assets/chopsic.otf", 65)
         self.stitle_surface = self.stitle.render(song.title, True, (255,255,255))
         self.sartist = pygame.font.Font("assets/chopsic.otf", 50)
         self.sartist_surface = self.sartist.render(song.artist, True, (255,255,255))
