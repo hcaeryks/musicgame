@@ -149,10 +149,10 @@ class Game():
 
         for x in range(6):
             if self.keyboard.key_pressed(self.keypresses[x]):
-                self.lanelights[x].stop()
-                self.lanelights[x].play()
                 self.keylights[x].draw()
                 if self.keypressesCurr[x] == False and self.notes[x] != []:
+                    self.lanelights[x].stop()
+                    self.lanelights[x].play()
                     self.keypressesCurr[x] = True
                     if self.notes[x][0].y > 777-300:
                         self.hitsound.stop()
