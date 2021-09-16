@@ -7,6 +7,9 @@ import os, json
 
 class SongSelection():
     def __init__(self, screen):
+        self.cooldown = True
+        self.cooldown_time = 0.3
+        self.cooldown_time_past = 0
         self.screen = screen
         self.keyboard = Keyboard()
         
@@ -68,6 +71,11 @@ class SongSelection():
         self.sgenre_surface = self.sgenre.render("GENRE: "+song.genre, True, (255,255,255))
 
     def draw(self):
+        if self.cooldown:
+            self.cooldown_time_past += self.screen.delta_time()
+            if self.cooldown_time_past >= self.cooldown_time:
+                self.cooldown = False
+                self.cooldown_time_past = 0
         self.songart.draw()
         self.jacketdarken.draw()
         self.bottombar.draw()
@@ -87,6 +95,7 @@ class SongSelection():
             self.infinitysonglist[i].draw()
             self.infinitysonglist[i].draw_text(self.screen.screen)
             if self.keyboard.key_pressed("enter"):
+                self.cooldown = True
                 diff = ""
                 if g.CURR_DIFF == 0: diff = "ez"
                 if g.CURR_DIFF == 1: diff = "nm"
@@ -130,8 +139,9 @@ class SongSelection():
             self.charterrortime -= self.screen.delta_time()
             if self.charterrortime <= 0: self.charterror.set_curr_frame(0)
 
-        if self.keyboard.key_pressed("ESC"):
+        if self.keyboard.key_pressed("ESC") and not self.cooldown:
             g.GAME_STATE = 0
+            self.cooldown = True
 
         if self.keyboard.key_pressed("left") and not self.lpress:
             self.lpress = True
