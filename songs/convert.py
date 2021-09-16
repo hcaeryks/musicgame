@@ -1,4 +1,4 @@
-with open("xi - Happy End of the World (Blocko) [6K Normal].osu") as file:
+with open("ParagonX9 - Chaoz Japan (Mage) [Myle's Hard].osu") as file:
     data = file.readlines()
     newArr = []
     for line in data[64:]:
