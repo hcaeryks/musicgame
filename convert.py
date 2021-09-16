@@ -1,4 +1,4 @@
-with open("penoreri - Lord=Crossight (Aras25) [6K ADVANCED].osu") as file:
+with open("filename.osu") as file:
     data = file.readlines()
     newArr = []
     for line in data[64:]:
@@ -20,5 +20,5 @@ with open("penoreri - Lord=Crossight (Aras25) [6K ADVANCED].osu") as file:
             end = str(info)
         newLine += time+lane+type+end+"\n"
         newArr.append(newLine)
-    with open("new.mgame", "w") as newFile:
+    with open("new.sc", "w") as newFile:
         newFile.writelines(newArr)
