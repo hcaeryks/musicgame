@@ -104,7 +104,6 @@ class SongSelection():
                 if g.CURR_DIFF == 2: diff = "hd"
                 if g.CURR_DIFF == 3: diff = "shd"
                 if os.path.isfile("songs/"+str(g.CURR_SONG)+"/"+diff+".sc"):
-                    print(g.CURR_DIFF,g.CURR_SONG,"songs/"+str(g.CURR_SONG)+"/"+diff+".sc")
                     g.GAME_STATE = 3
                 else:
                     self.charterror.set_curr_frame(1)
