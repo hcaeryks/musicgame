@@ -185,6 +185,7 @@ class Game():
                         self.errortime = 1 -self.screen.delta_time()
                         self.combo = 0
                         self.hpdiff -= 15
+                        self.hitM += 1
                         self.allhits.append(Hit(self.music.get_pos(), 0, 300))
             elif self.keypressesCurr[x] == True:
                 self.keypressesCurr[x] = False
