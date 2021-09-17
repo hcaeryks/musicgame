@@ -6,10 +6,13 @@ from screens.results import Results
 from screens.options import Options
 from PPlay.keyboard import *
 from PPlay.sprite import *
+import pygame
 import globalVar, util.settingsreader as settingsreader
 
 window = Window(1920, 1080)
 window.set_title("Soundscape")
+logo = pygame.image.load("assets/logo.jfif")
+pygame.display.set_icon(logo)
 
 scrRes = None
 scrGame = None
